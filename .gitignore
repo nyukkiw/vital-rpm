@@ -1,0 +1,26 @@
+# Database / credentials
+koneksi.php
+function.php
+.env
+.env.*
+config.php
+credentials.php
+secrets.php
+*.sql
+
+# Local runtime / generated files
+uploads/
+storage/
+logs/
+cache/
+tmp/
+*.log
+vendor/
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
