@@ -13,6 +13,8 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
     $username = isset($_POST['userName']) ? trim($_POST['userName']) : "";
     $password = isset($_POST['password']) ? trim($_POST['password']) : "";
 
+    // die("Username: $username, Password: $password"); // Debugging line to check values
+
     // cek apakah username dan password kosong 
     if(!$username || !$password){
         // jika kosong maka redirect ke halaman login dengan error
@@ -20,25 +22,46 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
         exit();
     }
     
-    $sql = "SELECT id, name, password FROM users WHERE name = ?";
+    $sql = "SELECT id, name, password, role FROM users WHERE name = ?";
     $stmt = $koneksi->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
       // CEK APAKAH USERNAME DITEMUKAN
-    if ($result->num_rows === 1) {
+    //   die("username: $username, password: $password, result rows: " . $result->num_rows); // Debugging line to check values
+    
+      if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
-
-        // COCOKKAN PASSWORD
-        // Menggunakan password_verify adalah standar keamanan untuk mengecek password yang di-hash
+        // die("sampai disini username: " . $user['name'] . ", password: " . $user['password'] . ", result rows: " . $result->num_rows); // Debugging line to check values
         if (password_verify($password, $user['password'])) { 
-            $_SESSION["user"] = $user['name'];
-            $_SESSION["user_id"] = $user['id'];
+            if($user['role'] === 'admin'){
+                $_SESSION["user"] = $user['name'];
+                $_SESSION["user_id"] = $user['id'];
+                    
+                header("Location: ../Admin/admin_dashbord.php");
+                exit();
+            }
+
+            if($user['role'] === 'dokter'){
+                $_SESSION["user"] = $user['name'];
+                $_SESSION["user_id"] = $user['id'];
+                    
+                header("Location: ../dokter/dokter_dashboard.php");
+                exit();
+            }
             
-            header("Location: ../home.php");
+
+            header("Location: ../pasien/pasien_dashboard.php");
             exit();
         }
+
+
+        // if(!isset($user['role'])){
+        //     header("Location:../index.php?error=role_tidak_ditemukan");
+        //     exit();
+        // }
+
     }
 
     // Jika username tidak ada ATAU password salah, lempar ke sini

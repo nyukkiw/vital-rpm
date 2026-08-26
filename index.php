@@ -6,6 +6,8 @@ if(isset($_GET['error'])){
         $pesanError="Username dan password tidak boleh kosong";
     }elseif($_GET['error']=="salah"){
         $pesanError="invalid username atau password"; 
+    }else{
+        $pesanError=$_GET['error'];
     }
 }
 
