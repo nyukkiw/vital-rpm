@@ -38,6 +38,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
             if($user['role'] === 'admin'){
                 $_SESSION["user"] = $user['name'];
                 $_SESSION["user_id"] = $user['id'];
+                $_SESSION["role"] = $user['role'];
                     
                 header("Location: ../Admin/admin_dashbord.php");
                 exit();
@@ -46,7 +47,8 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
             if($user['role'] === 'dokter'){
                 $_SESSION["user"] = $user['name'];
                 $_SESSION["user_id"] = $user['id'];
-                    
+                $_SESSION["role"] = $user['role'];
+
                 header("Location: ../dokter/dokter_dashboard.php");
                 exit();
             }
