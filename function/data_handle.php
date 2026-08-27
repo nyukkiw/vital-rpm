@@ -34,6 +34,14 @@ function getStatsAcc($koneksi, $stats){
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+function addUser($koneksi){
+    
+}
+
+function editUser($koneksi, $id){
+     
+}
+
 
 
 

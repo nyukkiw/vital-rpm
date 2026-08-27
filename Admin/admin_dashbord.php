@@ -29,6 +29,8 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
 
 
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -136,53 +138,74 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                     <!-- Bagian Judul dan Tombol Tambah User -->
                     <header class="section-header">
                         <h2 class="title-daftar">Daftar User</h2>
-                        <button class="btn-tambah">Tambah User</button>
+                        <a href="admin_tambahUser.php">
+                            <button class="btn-tambah">Tambah User</button>
+                        </a>
                     </header>
 
+                    <!-- list user -->
                     <div class="users-list">
+
+                        <?php foreach ($dataUsersCount as $user): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
                                     <span class="material-icons avatar-icon">person</span>
                                     <div class="user-text">
-                                        <strong>Singkong</strong>
-                                        <span>Psikiater</span>
+                                        <strong><?= $user['name'] ?></strong>
+                                        <span><?= $user['role'] ?></span>
                                     </div>
                                 </div>
                             
                                 <div class="user-actions">
-                                    <span class="badge badge-aktif">Aktif</span>
-                                    <button class="btn-edit"><span class="material-icons">edit</span> Edit</button>
-                                    <button class="btn-hapus"><span class="material-icons">delete</span> Hapus</button>
+                                    <span class="badge badge-aktif"><?= $user['status'] ?></span>
+                                    <a href="admin_editUser.php?id=<?= $user['id'] ?>">
+                                        <button class="btn-edit">
+                                            <span class="material-icons">
+                                                edit
+                                            </span> 
+                                        </button>
+                                    </a>
+                                    
+                                    <button class="btn-hapus">
+                                        <span class="material-icons">
+                                            delete
+                                        </span> 
+                                    </button>
                                 </div>
                         </article>
+                        <?php endforeach;?>
                     </div>
-
+                    <!-- end list user -->
                 </section>
+
 
                 <!-- sesi manajemen konten -->
                 <section class="manajemem-konten">
                     <header class="section-header">
                         <h2 class="title-daftar">Konten edukasi</h2>
-                        <button class="btn-tambah">Tambah konten</button>
+                        <a href="admin_tambahKonten.php">
+                            <button class="btn-tambah">Tambah konten</button>
+                        </a>
                     </header>
 
                     <div class="users-list">
+                        <?php foreach ($semuaDataKonten as $konten): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
                                     <span class="material-icons avatar-icon">thumbnail</span>
                                     <div class="user-text">
-                                        <strong>Judul konten</strong>
-                                        <span>publish: dd-mm-yyyy</span>
-                                        <span>Link: http</span>
+                                        <strong>Judul: <?= $konten['judul'] ?></strong>
+                                        <span>publish: <?= $konten['created_at'] ?></span>
+                                        <span>Link: <?= $konten['link'] ?></span>
                                     </div>
                                 </div>
                             
                                 <div class="user-actions">
-                                    <span class="badge badge-aktif">Aktif</span>
-                                    <button class="btn-edit"><span class="material-icons">edit</span> Edit</button>
-                                    <button class="btn-hapus"><span class="material-icons">delete</span> Hapus</button>
+                                    <button class="btn-edit"><span class="material-icons">edit</span> </button>
+                                    <button class="btn-hapus"><span class="material-icons">delete</span> </button>
                                 </div>
                         </article>
+                        <?php endforeach;?>
                     </div>
 
                 </section>
