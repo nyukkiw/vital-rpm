@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../function/data_handle.php";
+require_once __DIR__ . "/../function/data/data_handle.php";
 require_once __DIR__ . "/../function/koneksi.php";
-require_once __DIR__ . "/../function/auth_cek.php";
+require_once __DIR__ . "/../function/auth/auth_cek.php";
 
 
 
@@ -138,6 +138,9 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                     <!-- Bagian Judul dan Tombol Tambah User -->
                     <header class="section-header">
                         <h2 class="title-daftar">Daftar User</h2>
+                        <?php
+                        
+                        ?>
                         <a href="admin_tambahUser.php">
                             <button class="btn-tambah">Tambah User</button>
                         </a>

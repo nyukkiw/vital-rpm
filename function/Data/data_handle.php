@@ -34,8 +34,32 @@ function getStatsAcc($koneksi, $stats){
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function addUser($koneksi){
-    
+function addUser($koneksi,$add){
+
+    $passwordPolos = $add['password'] ?? "";
+    $passwordHash = password_hash($passwordPolos, PASSWORD_DEFAULT);  
+
+    $data = mysqli_prepare($koneksi, "INSERT INTO users (name, jenis_kelamin, tanggal_lahir, alamat, email, password, phone, no_rekam_medis, alergi, role, avatar, status) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    mysqli_stmt_bind_param($data, "ssssssssssss",  $add['userName'],     
+        $add['jenisKelamin'],  
+        $add['tanggalLahir'],
+        $add['alamat'],
+        $add['email'],         
+        $passwordHash,        
+        $add['noTlpn'],        
+        $add['noRekamMedis'],
+        $add['alergi'],
+        $add['peran'],        
+        $add['avatar'],        
+        $add['status']);
+
+    $prosesSimpan = mysqli_stmt_execute($data);
+
+    return $prosesSimpan;
+
+
 }
 
 function editUser($koneksi, $id){

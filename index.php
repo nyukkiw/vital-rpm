@@ -40,7 +40,7 @@ if(isset($_GET['error'])){
         </div>
         <p>Silakan masuk untuk memantau kesehatan mental Anda.</p>
         <div class="login-form">
-            <form method="POST" action="function/login_logic.php">
+            <form method="POST" action="function/auth/login_logic.php">
                 <input type="text" name="userName" placeholder="Nama pengguna">
                 <input type="password" name="password" placeholder="Password">
                 <button type="submit" id="loginButton">Masuk</button>
