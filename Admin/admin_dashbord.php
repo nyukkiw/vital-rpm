@@ -204,8 +204,21 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                                 </div>
                             
                                 <div class="user-actions">
-                                    <button class="btn-edit"><span class="material-icons">edit</span> </button>
-                                    <button class="btn-hapus"><span class="material-icons">delete</span> </button>
+                                    <a href="admin_editKonten.php?id=<?= $konten['id'] ?>">
+                                        <button class="btn-edit">
+                                            <span class="material-icons">
+                                                edit
+                                            </span>
+                                        </button>
+                                    </a>
+
+                                    <a href="">
+                                        <button class="btn-hapus">
+                                            <span class="material-icons">
+                                                delete
+                                            </span>
+                                        </button>
+                                    </a>
                                 </div>
                         </article>
                         <?php endforeach;?>

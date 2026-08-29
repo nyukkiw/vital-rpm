@@ -19,6 +19,12 @@ function getDataById($koneksi, $id){
     return $data; 
 }
 
+function getContentById($koneksi, $path, $id){
+    $data = mysqli_query($koneksi, "SELECT * FROM $path WHERE id = $id");
+    return $data; 
+}
+
+
 function getDataByRole($koneksi, $role){
     $data = mysqli_prepare($koneksi, "SELECT * FROM users WHERE role = ?");
     mysqli_stmt_bind_param($data, "s", $role);
@@ -77,9 +83,10 @@ function editUser($koneksi, $update){
 function thumbnailHanler($file){
     $thumbnailTitle = uniqid() . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
     $tujuanSimpan = __DIR__ . '/../../uploads/thumbnails/' . $thumbnailTitle;
+    $pathDatabase = 'uploads/thumbnails/' . $thumbnailTitle;
 
     if(move_uploaded_file($file['tmp_name'], $tujuanSimpan)){
-        return $tujuanSimpan;
+        return $pathDatabase;
     }else{
         return false; 
     }
@@ -91,7 +98,7 @@ function addContent($koneksi, $add, $id, $path ){
     $id,
     $add['judul'],
     $add['link'],
-    $add['deksripsi'],
+    $add['deskripsi'],
     $path
     );
     $prosesTambahKonten = mysqli_stmt_execute($data);
