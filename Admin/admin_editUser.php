@@ -55,12 +55,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <input type="text" name="userName" placeholder="Nama pengguna" value="<?= $user['name'] ?>">
                     </label>
                     
-                    <!-- <label for="">
+                    <label for="">
                         Password
-                        <input type="password" name="password" placeholder="Password" value="<?= $user['password'] ?>">
-                    </label> -->
+                        <input type="password" name="password" placeholder="Password">
+                    </label>
 
-                    <!-- <label for="laki">
+                    <label for="laki">
                             <input type="radio" id="laki" name="jenisKelamin" value="Laki-laki" 
                                 <?= ($user['jenis_kelamin'] === 'Laki-laki') ? 'checked' : ''; ?>>
                             Laki-laki
@@ -70,7 +70,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                             <input type="radio" id="perempuan" name="jenisKelamin" value="Perempuan" 
                                 <?= ($user['jenis_kelamin'] === 'Perempuan') ? 'checked' : ''; ?>>
                             Perempuan
-                    </label> -->
+                    </label>
                     
                     <label>
                         Alamat                        
@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <input type="text" name="alergi" placeholder="Alergi" value="<?= $user['alergi']?>">
                     </label>
                     
-                    <input type="text" name="noRekamMedis" placeholder="No.Rekam medis" value="<?= $user['no_rekam_medis'] ?>">
+                    <!-- <input type="text" name="noRekamMedis" placeholder="No.Rekam medis" value="<?= $user['no_rekam_medis'] ?>"> -->
 
                     <input type="text" name="noTlpn" placeholder="No. Telpon" value="<?= $user['phone'] ?>">
                     

@@ -73,12 +73,15 @@ function addUser($koneksi,$add){
 }
 
 function editUser($koneksi, $update){
+
     $data = mysqli_prepare($koneksi, "UPDATE users SET name = ?, alamat = ?, email = ?, phone = ?, no_rekam_medis = ?, alergi = ?, status = ? WHERE id = ?");
+    
     mysqli_stmt_bind_param($data, "sssssssi", 
     $update['userName'], $update['alamat'], $update['email'],
     $update['noTlpn'], $update['noRekamMedis'], $update['alergi'],
     $update['status'], $update['id']);
     $prosesModifikasi = mysqli_stmt_execute($data);
+
     return $prosesModifikasi;  
 }
 function editContent($koneksi, $update, $id, $path){
