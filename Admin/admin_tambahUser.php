@@ -9,10 +9,11 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
 
-
+$notifikasiAddUser = null;
 if($_SERVER["REQUEST_METHOD"] === "POST"){
 
     $pesanEror = "";
+    
 
     $field_wajib = ['userName', 'password', 'jenisKelamin', 
     'alamat', 'peran', 
@@ -26,7 +27,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
         
     }
-
+    
     if($pesanEror == true){
         $_SESSION['error'] = "field tidak boleh kosong";
         header("Location: admin_tambahUser.php");
@@ -34,13 +35,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     }else{
         $berhasilTambah = addUser($koneksi, $_POST);
         if($berhasilTambah){
-            $_SESSION['suksesTambah'] = "Data berhasil ditambah ke database!";
-            header("Location: admin_tambahUser.php");
-            exit();
+            $notifikasiAddUser="Data berhasil ditambahkan";
         }else{
-            $_SESSION['errorTambah'] = "Gagal menambahkan data ke database";
-            header("Location: admin_tambahUser.php");
-            exit();
+            $notifikasiAddUser="Data gagal ditambahkan";
         }
     }
 
@@ -64,36 +61,22 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     <div class="container-addPage-layout">
         <div class="add-pageLayout">
             <header>
+                <a href="admin_dashbord.php">
+                    <button>Kembali</button>
+                </a>
                 <div class="title-addUser">
                     <H1>Tambah user</H1>
                 </div>
             </header>
             <main>
+                <?php
+                if(!is_null($notifikasiAddUser)):
+                ?>
+                    <p><?= $notifikasiAddUser ?></p>
+                <?php
+                endif;
+                ?>
                 <div class="formAdd-container">
-
-                    <?php if(!empty($_SESSION['error'])):?>
-                       <p> <?= htmlspecialchars($_SESSION['error']) ?></p>
-                       <?php
-                        unset($_SESSION['error']);
-                       ?>
-
-                    <?php elseif(!empty($_SESSION['suksesTambah'])):?>
-                        <p><?= htmlspecialchars($_SESSION['suksesTambah']) ?></p>
-
-                        <?php foreach ($_SESSION['isi_data'] as $iniData): ?>
-                            <p><?= $iniData ?></p>
-                        <?php endforeach;?>
-
-                        <?php
-                        unset($_SESSION['suksesTambah']);
-                        ?>
-
-                    <?php else: ?>
-                        <p><?= $_SESSION['errorTambah']; ?></p>
-                        <?php unset($_SESSION['errorTambah']);?>
-
-                    <?php endif; ?>
-                    
                 <form method="POST">
                     <label for="">
                         Nama pengguna

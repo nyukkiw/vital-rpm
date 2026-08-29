@@ -62,8 +62,42 @@ function addUser($koneksi,$add){
 
 }
 
-function editUser($koneksi, $id){
+function editUser($koneksi, $update){
+    $data = mysqli_prepare($koneksi, "UPDATE users SET name = ?, alamat = ?, email = ?, phone = ?, no_rekam_medis = ?, alergi = ?, status = ? WHERE id = ?");
+    mysqli_stmt_bind_param($data, "sssssssi", 
+    $update['userName'], $update['alamat'], $update['email'],
+     $update['noTlpn'], $update['noRekamMedis'], $update['alergi'],
+      $update['status'], $update['id']);
+    $prosesModifikasi = mysqli_stmt_execute($data);
+    return $prosesModifikasi;
      
+}
+
+
+function thumbnailHanler($file){
+    $thumbnailTitle = uniqid() . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+    $tujuanSimpan = __DIR__ . '/../../uploads/thumbnails/' . $thumbnailTitle;
+
+    if(move_uploaded_file($file['tmp_name'], $tujuanSimpan)){
+        return $tujuanSimpan;
+    }else{
+        return false; 
+    }
+}
+
+function addContent($koneksi, $add, $id, $path ){
+    $data = mysqli_prepare($koneksi, "INSERT INTO konten_edukasi (admin_id, judul, link, deskripsi, thumbnail) VALUES (?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($data, "issss", 
+    $id,
+    $add['judul'],
+    $add['link'],
+    $add['deksripsi'],
+    $path
+    );
+    $prosesTambahKonten = mysqli_stmt_execute($data);
+
+    return $prosesTambahKonten;
+
 }
 
 
