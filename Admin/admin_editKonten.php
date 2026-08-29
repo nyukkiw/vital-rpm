@@ -8,22 +8,27 @@ proteksi($_SESSION["role"], $_SESSION["user_id"]);
 $konten = getContentById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc();
 
 
-// $notifikasiTambah=null;
+$notifikasiModif=null;
 
-// if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $modifikasi = editContent($koneksi, $_POST, $konten['id'],$_FILES['thumbnail_baru']);
 
-//     $hasilThumb = thumbnailHanler($_FILES['thumbnail']);
-//     if($hasilThumb){
-//         $tambahKonten = addContent($koneksi, $_POST, $_SESSION['user_id'], $hasilThumb);
+    if($modifikasi){
+        $notifikasiModif = "Berhasil mengedit konten";
+    }else{
+        $notifikasiModif = "Gagal mengedit konten"; 
+    }
 
-//         if($tambahKonten){
-//             $notifikasiTambah="Berhasil tambah konten"; 
-//         }else{
-//             $notifikasTambah="gagal tambah konten";
-//         }
-//     }
+    // $hasilThumb = thumbnailHanler($_FILES['thumbnail_lama']);
+
+    //     // if($tambahKonten){
+    //     //     $notifikasiTambah="Berhasil tambah konten"; 
+    //     // }else{
+    //     //     $notifikasTambah="gagal tambah konten";
+    //     // }
+    // }
    
-// }
+}
 
 
 
@@ -48,13 +53,13 @@ $konten = getContentById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc()
                 </div>
             </header>
             <main>
-                <!-- <?php
-                if(!is_null($notifikasiTambah)):
+                <?php
+                if(!is_null($notifikasiModif)):
                 ?>
-                    <p><?= $notifikasiTambah ?></p>
+                    <p><?= $notifikasiModif ?></p>
                 <?php
                 endif;
-                ?>  -->
+                ?> 
 
                 <div class="formAdd-container">
                 <form method="POST"  enctype="multipart/form-data">
@@ -75,9 +80,16 @@ $konten = getContentById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc()
                     <label for="">
                         Thumbnail
                         <img src="/uploads/thumbnails/<?= basename($konten['thumbnail']); ?>" alt="thumbnail">
+                        <input type="file" name="thumbnail_baru" accept="image/jpeg, image/png">
+                        <input type="hidden" name="thumbnail_lama" value="<?= $konten['thumbnail']; ?>">
                     </label>
+
+                    <!-- <label for="">
+                        Thumbnail
+                        <img src="/uploads/thumbnails/<?= basename($konten['thumbnail']); ?>" alt="thumbnail">
+                    </label> -->
                 
-                    <button type="submit" id="daftarButton">Daftarkan</button>
+                    <button type="submit" id="parubahanButton">Simpan perubahan</button>
                 </form>   
                 </div>
             </main>

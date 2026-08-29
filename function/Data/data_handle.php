@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\override;
+
 function getAlldataUsers($koneksi){
     $data = mysqli_prepare($koneksi, "SELECT * FROM users");
     // mysqli_stmt_bind_param($data, "s");
@@ -18,6 +21,7 @@ function getDataById($koneksi, $id){
     $data = mysqli_query($koneksi, "SELECT * FROM users WHERE id = $id");
     return $data; 
 }
+
 
 function getContentById($koneksi, $path, $id){
     $data = mysqli_query($koneksi, "SELECT * FROM $path WHERE id = $id");
@@ -72,11 +76,30 @@ function editUser($koneksi, $update){
     $data = mysqli_prepare($koneksi, "UPDATE users SET name = ?, alamat = ?, email = ?, phone = ?, no_rekam_medis = ?, alergi = ?, status = ? WHERE id = ?");
     mysqli_stmt_bind_param($data, "sssssssi", 
     $update['userName'], $update['alamat'], $update['email'],
-     $update['noTlpn'], $update['noRekamMedis'], $update['alergi'],
-      $update['status'], $update['id']);
+    $update['noTlpn'], $update['noRekamMedis'], $update['alergi'],
+    $update['status'], $update['id']);
     $prosesModifikasi = mysqli_stmt_execute($data);
-    return $prosesModifikasi;
-     
+    return $prosesModifikasi;  
+}
+function editContent($koneksi, $update, $id, $path){
+    $thumbnail = $update['thumbnail_lama'];
+
+    if($path['error'] !== UPLOAD_ERR_NO_FILE){
+        $thumbnailPathBaru = thumbnailHanler($path);
+        if($thumbnailPathBaru){
+            unlink(__DIR__ . '/../../' . $thumbnail);
+            $thumbnail = $thumbnailPathBaru;
+        }
+    }
+    $data = mysqli_prepare($koneksi, "UPDATE 
+    konten_edukasi SET judul = ?, link = ?, 
+    deskripsi = ?, thumbnail = ? WHERE id = ?");
+
+    mysqli_stmt_bind_param($data, "ssssi", 
+    $update['judul'], $update['link'], $update['deskripsi'], $thumbnail, $id );
+
+    $prosesModifikasi = mysqli_stmt_execute($data);
+    return $prosesModifikasi;  
 }
 
 
@@ -92,7 +115,7 @@ function thumbnailHanler($file){
     }
 }
 
-function addContent($koneksi, $add, $id, $path ){
+function addContent($koneksi, $add, $id, $path){
     $data = mysqli_prepare($koneksi, "INSERT INTO konten_edukasi (admin_id, judul, link, deskripsi, thumbnail) VALUES (?, ?, ?, ?, ?)");
     mysqli_stmt_bind_param($data, "issss", 
     $id,

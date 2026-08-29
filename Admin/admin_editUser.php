@@ -19,6 +19,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 }
 
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,7 +100,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         Tidak aktif
                     </label>
 
-                    <button type="submit" id="daftarButton">Simpan perubahan</button>
+                    <button type="submit" id="perubahanButton">Simpan perubahan</button>
 
                 </form>   
                 </div>
