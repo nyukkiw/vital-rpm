@@ -11,7 +11,7 @@ $user = getDataById($koneksi, $_GET['id'])->fetch_assoc();
 $modifSukses = null;
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $berhasilModifikasi = editUser($koneksi, $user);
+    $berhasilModifikasi = editUser($koneksi, $_POST, $user['id']);
     if($berhasilModifikasi){
         $modifSukses = "Modifikasi data berhasil";
     }else{
@@ -50,6 +50,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 ?> 
                 <div class="formAdd-container">
                 <form method="POST">
+
                     <label for="">
                         Nama pengguna
                         <input type="text" name="userName" placeholder="Nama pengguna" value="<?= $user['name'] ?>">
@@ -58,6 +59,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     <label for="">
                         Password
                         <input type="password" name="password" placeholder="Password">
+                    </label>
+
+                     <label for="aktif">
+                        <input type="radio" id="aktif" name="status" value="Aktif" 
+                        <?= ($user['status'] === 'aktif') ? 'checked' : ''; ?>>
+                        Aktif
+                    </label>
+
+                    <label for="nonAktif">
+                        <input type="radio" id="nonAktif" name="status" value="Tidak aktif"
+                        <?= ($user['status'] === 'tidak aktif') ? 'checked' : ''; ?>>
+                        Tidak aktif
                     </label>
 
                     <label for="laki">
@@ -76,7 +89,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         Alamat                        
                         <input type="text" name="alamat" placeholder="Alamat" value="<?= $user['alamat'] ?>">
                     </label>
+                    <label for="">
+                        No. Telpon
+                        <input type="text" name="noTlpn" placeholder="No. Telpon" value="<?= $user['phone'] ?>">
+                    </label>
 
+                    <label for="">
+                        Email
+                        <input type="text" name="noTlpn" placeholder="No. Telpon" value="<?= $user['email'] ?>">
+                    </label>
+                    
                     <label>
                         Alergi
                         <input type="text" name="alergi" placeholder="Alergi" value="<?= $user['alergi']?>">
@@ -84,21 +106,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     
                     <!-- <input type="text" name="noRekamMedis" placeholder="No.Rekam medis" value="<?= $user['no_rekam_medis'] ?>"> -->
 
-                    <input type="text" name="noTlpn" placeholder="No. Telpon" value="<?= $user['phone'] ?>">
                     
                     <input type="text" name="email" placeholder="email" value="<?= $user['email'] ?>">
 
-                    <label for="aktif">
-                        <input type="radio" id="aktif" name="status" value="Aktif" 
-                        <?= ($user['status'] === 'aktif') ? 'checked' : ''; ?>>
-                        Aktif
-                    </label>
-
-                    <label for="nonAktif">
-                        <input type="radio" id="nonAktif" name="status" value="Tidak aktif"
-                        <?= ($user['status'] === 'tidak aktif') ? 'checked' : ''; ?>>
-                        Tidak aktif
-                    </label>
+                   
 
                     <button type="submit" id="perubahanButton">Simpan perubahan</button>
 

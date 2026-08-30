@@ -67,6 +67,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         Judul
                         <input type="text" name="judul" value="<?= $konten['judul'] ?>" >
                     </label>
+                    
                     <label for="">
                         Link
                         <input type="text" name="link" value="<?= $konten['link'] ?>" >
