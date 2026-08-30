@@ -4,12 +4,39 @@ require_once __DIR__ . "/../function/data/data_handle.php";
 require_once __DIR__ . "/../function/koneksi.php";
 require_once __DIR__ . "/../function/auth/auth_cek.php";
 
-
+$notifikasiHapus=null;
 
 proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
-$dataUsersCount = getAlldataUsers($koneksi);
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_id']) && isset($_POST['nama_table'])){
+    // $notifikasiHapus=$_POST['hapus_id'];
+    $targetId=$_POST['hapus_id'];
+    $targetTable=$_POST['nama_table'];
+
+
+
+    $pengamanTable = ['users','konten_edukasi'];
+
+    if(in_array($targetTable,$pengamanTable)){
+        $suksesHapus = deleteData($koneksi, $targetId, $targetTable);
+        if($suksesHapus){
+            $notifikasiHapus = "Berhasil menghapus data";
+        }else{
+            $notifikasiHapus = "Gagal menghapus data";
+        }
+
+    }
+
+
+}
+
+
+$dataUsersCount = array_filter(getAlldataUsers($koneksi), function ($user) {
+ return $user['role'] !== 'admin';
+});
+
 $semuaDataKonten = getAlldataContent($koneksi);
+
 
 $dataCountPasien = array_filter($dataUsersCount, function($user){
     return $user['role'] === 'pasien';
@@ -20,12 +47,15 @@ $dataCountDokter = array_filter($dataUsersCount, function($user){
 });
 
 $dataAkunAktif= array_filter($dataUsersCount, function($user){
-    return $user['status'] === 'aktif';
+    return $user['status'] === 'aktif' && $user['role'] !== 'admin';
 });
 
 $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
-    return $user['status'] === 'tidak aktif';
+    return $user['status'] === 'tidak aktif' && $user['role'] !== 'admin';
 });
+
+
+
 
 
 
@@ -139,8 +169,13 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                     <header class="section-header">
                         <h2 class="title-daftar">Daftar User</h2>
                         <?php
-                        
+                            if(!is_null($notifikasiHapus)):
                         ?>
+                            <p><?= $notifikasiHapus ?></p>
+                        <?php
+                        endif;
+                        ?>
+
                         <a href="admin_tambahUser.php">
                             <button class="btn-tambah">Tambah User</button>
                         </a>
@@ -169,11 +204,11 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                                         </button>
                                     </a>
                                     
-                                    <button class="btn-hapus">
-                                        <span class="material-icons">
-                                            delete
-                                        </span> 
-                                    </button>
+                                    <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        <input type="hidden" name="hapus_id" value="<?= $user['id']; ?>">
+                                        <input type="hidden" name="nama_table" value="users">
+                                        <button type="submit">Hapus</button>
+                                    </form>
                                 </div>
                         </article>
                         <?php endforeach;?>
@@ -212,13 +247,12 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                                         </button>
                                     </a>
 
-                                    <a href="">
-                                        <button class="btn-hapus">
-                                            <span class="material-icons">
-                                                delete
-                                            </span>
-                                        </button>
-                                    </a>
+                                    <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        <input type="hidden" name="hapus_id" value="<?= $konten['id']; ?>">
+                                        <input type="hidden" name="nama_table" value="konten_edukasi">
+                                        <button type="submit">Hapus</button>
+                                    </form>
+
                                 </div>
                         </article>
                         <?php endforeach;?>

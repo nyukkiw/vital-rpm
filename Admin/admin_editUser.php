@@ -6,7 +6,9 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 
 proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
-$user = getDataById($koneksi, $_GET['id'])->fetch_assoc();
+// $user = getDataById($koneksi, $_GET['id'])->fetch_assoc();
+
+$user = getDataById($koneksi, 'users', $_GET['id'])->fetch_assoc();
 
 $modifSukses = null;
 

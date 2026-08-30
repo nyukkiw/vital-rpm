@@ -5,7 +5,8 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 
 proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
-$konten = getContentById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc();
+// $konten = getContentById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc();
+$konten = getDataById($koneksi, 'konten_edukasi', $_GET['id'])->fetch_assoc();
 
 
 $notifikasiModif=null;
@@ -67,7 +68,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         Judul
                         <input type="text" name="judul" value="<?= $konten['judul'] ?>" >
                     </label>
-                    
+
                     <label for="">
                         Link
                         <input type="text" name="link" value="<?= $konten['link'] ?>" >
