@@ -28,12 +28,12 @@ function thumbnailHanler($file){
             }
             }
             
-            function addUser($koneksi,$add){
+function addUser($koneksi,$add){
                 
-                $passwordPolos = $add['password'] ?? "";
-                $passwordHash = password_hash($passwordPolos, PASSWORD_DEFAULT);  
+$passwordPolos = $add['password'] ?? "";
+$passwordHash = password_hash($passwordPolos, PASSWORD_DEFAULT);  
                 
-                $data = mysqli_prepare($koneksi, "INSERT INTO users (name, jenis_kelamin, tanggal_lahir, alamat, email, password, phone, no_rekam_medis, alergi, role, avatar, status) 
+$data = mysqli_prepare($koneksi, "INSERT INTO users (name, jenis_kelamin, tanggal_lahir, alamat, email, password, phone, no_rekam_medis, alergi, role, avatar, status) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 mysqli_stmt_bind_param($data, "ssssssssssss",  $add['userName'],     
@@ -54,11 +54,12 @@ mysqli_stmt_bind_param($data, "ssssssssssss",  $add['userName'],
         return $prosesSimpan;
         
         
-        }
+}
+
 function editUser($koneksi, $update, $id){
-$data = mysqli_prepare($koneksi, "UPDATE users SET name = ?, alamat = ?, email = ?, phone = ?, alergi = ?, status = ? WHERE id = ?");
-mysqli_stmt_bind_param($data, "ssssssi", 
-$update['userName'], $update['alamat'], $update['email'],
+$data = mysqli_prepare($koneksi, "UPDATE users SET name = ?, jenis_kelamin = ?, alamat = ?, email = ?, phone = ?, alergi = ?, status = ? WHERE id = ?");
+mysqli_stmt_bind_param($data, "sssssssi", 
+$update['userName'], $update['jenisKelamin'],$update['alamat'], $update['email'],
 $update['noTlpn'],  $update['alergi'],
 $update['status'], $id);
 $prosesModifikasi = mysqli_stmt_execute($data);

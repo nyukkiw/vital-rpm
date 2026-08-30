@@ -82,7 +82,7 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                 <div class="admin_profile">
                     <span class="material-icons">person icon</span>
                     <div class="profile-info">
-                        <strong><?= $_SESSION['user'] ?></strong>
+                        <strong><?= $_SESSION['user'] ?> || <a href="/function/auth/logout.php">Logout</a> </strong>
                       
                     </div>
                 </div>
