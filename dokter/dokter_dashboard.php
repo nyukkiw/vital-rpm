@@ -29,38 +29,20 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_id']) && isset($
 
 
 }
+// $dataUsersCount = array_filter(getAlldataUsers($koneksi), function ($user) {
+// return $user['role'] !== 'admin';
+// });
 
-
-$dataUsersCount = array_filter(getAlldataUsers($koneksi), function ($user) {
- return $user['role'] !== 'admin';
+$dataCountSchedule = array_filter(getJadwalWithUser($koneksi), function ($schedule) {
+    return $schedule;
 });
+// $dataCountDassResult = array_filter(getAllDataDass21($koneksi), function ($result) {
+//     return $result;
+// });
 
-$semuaDataKonten = getAlldataContent($koneksi);
-
-
-$dataCountPasien = array_filter($dataUsersCount, function($user){
-    return $user['role'] === 'pasien';
+$dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
+    return $user;
 });
-
-$dataCountDokter = array_filter($dataUsersCount, function($user){
-    return $user['role'] === 'dokter';
-});
-
-$dataAkunAktif= array_filter($dataUsersCount, function($user){
-    return $user['status'] === 'aktif' && $user['role'] !== 'admin';
-});
-
-$dataNonAktifAcc= array_filter($dataUsersCount, function($user){
-    return $user['status'] === 'tidak aktif' && $user['role'] !== 'admin';
-});
-
-
-
-
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -82,87 +64,13 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                 <div class="admin_profile">
                     <span class="material-icons">person icon</span>
                     <div class="profile-info">
-                        <strong>Dr. <?= $_SESSION['user'] ?></strong>
+                        <strong><?= $_SESSION['user'] ?> || <a href="/function/auth/logout.php">Logout</a> </strong>
                       
                     </div>
                 </div>
             </header>
 
             <main>
-
-                <!-- sesi pantau statistik -->
-                <section class="statistik-section">
-                   <header>
-                    <h2>Monitor pasien</h2>
-                    <div class="db-status">
-                       <span class="material-icons">
-                        database
-                       </span> 
-                    </div>
-                   </header>
-                   
-                   <div class="cards-grid">
-
-                        <article class="stat-card">
-                            <div class="card-icon icon-patients">
-                                <span class="material-icons">groups</span>
-                            </div>
-                            <div class="card-info">
-                                <span class="card-label">Total Pasien</span>
-                                <strong class="card-number"> <?=count($dataCountPasien) ?> </strong>
-                            </div>
-                        </article>
-
-                        <article class="stat-card">
-                            <div class="card-icon icon-patients">
-                                <span class="material-icons">medical</span>
-                            </div>
-                            <div class="card-info">
-                                <span class="card-label">Total Dokter</span>
-                                <strong class="card-number"> <?=count($dataCountDokter) ?> </strong>
-                            </div>
-                        </article>
-
-                        <article class="stat-card">
-                             <div class="card-icon icon-patients">
-                                <span class="material-icons">active acc</span>
-                            </div>
-                            <div class="card-info">
-                                <span class="card-label">Akun aktif</span>
-                                <strong class="card-number"> <?=count($dataAkunAktif) ?> </strong>
-                            </div>
-                        </article>
-
-                        <article class="stat-card">
-                            <div class="card-icon icon-patients">
-                                <span class="material-icons">inactive acc</span>
-                            </div>
-                            <div class="card-info">
-                                <span class="card-label">Akun tidak aktif</span>
-                                <strong class="card-number"> <?=count($dataNonAktifAcc) ?> </strong>
-                            </div>
-                        </article>
-
-                        </article>
-
-                        <article class="stat-card">
-                            <div class="card-icon icon-patients">
-                                    <span class="material-icons">Konten</span>
-                                </div>
-                                <div class="card-info">
-                                    <span class="card-label">Jumlah konten</span>
-                                    <strong class="card-number"> <?=count($semuaDataKonten) ?> </strong>
-                                </div>
-                        </article>
-
-                        <article class="stat-card">
-
-                        </article>
-
-                   </div>
-
-                </section>
-
                 <!-- sesi manajemen user -->
                 <section class="users-manajemen">
                     <!-- Bagian Judul dan Tombol Tambah User -->
@@ -184,31 +92,38 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                     <!-- list user -->
                     <div class="users-list">
 
-                        <?php foreach ($dataUsersCount as $user): ?>
+                        <?php foreach ($dataCountPasien as $user): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
                                     <span class="material-icons avatar-icon">person</span>
                                     <div class="user-text">
-                                        <strong><?= $user['name'] ?></strong>
-                                        <span><?= $user['role'] ?></span>
+                                        <strong><?= $user['pasien'] ?></strong>
+                                        <span>Last DASS-21 * <?= $user['tanggal_pengisian'] ?></span>
                                     </div>
                                 </div>
                             
                                 <div class="user-actions">
-                                    <span class="badge badge-aktif"><?= $user['status'] ?></span>
-                                    <a href="admin_editUser.php?id=<?= $user['id'] ?>">
+                                    <span class="badge badge-aktif"><?= $user['kategori'] ?></span>
+                                    <a href="<?= $user['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
-                                                edit
+                                                rekap
+                                            </span> 
+                                        </button>
+                                    </a>
+                                    <a href="<?= $user['id'] ?>">
+                                        <button class="btn-edit">
+                                            <span class="material-icons">
+                                                detail
                                             </span> 
                                         </button>
                                     </a>
                                     
-                                    <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         <input type="hidden" name="hapus_id" value="<?= $user['id']; ?>">
                                         <input type="hidden" name="nama_table" value="users">
                                         <button type="submit">Hapus</button>
-                                    </form>
+                                    </form> -->
                                 </div>
                         </article>
                         <?php endforeach;?>
@@ -217,29 +132,29 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                 </section>
 
 
-                <!-- sesi manajemen konten -->
+                <!-- sesi manajemen Jadwal -->
                 <section class="manajemem-konten">
                     <header class="section-header">
-                        <h2 class="title-daftar">Konten edukasi</h2>
+                        <h2 class="title-daftar">Jadwal pertemuan</h2>
                         <a href="admin_tambahKonten.php">
-                            <button class="btn-tambah">Tambah konten</button>
+                            <button class="btn-tambah">buat jadwal</button>
                         </a>
                     </header>
 
                     <div class="users-list">
-                        <?php foreach ($semuaDataKonten as $konten): ?>
+                        <?php foreach ($dataCountSchedule as $jadwal): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
-                                    <span class="material-icons avatar-icon">thumbnail</span>
+                                    <span class="material-icons avatar-icon">jadwal</span>
                                     <div class="user-text">
-                                        <strong>Judul: <?= $konten['judul'] ?></strong>
-                                        <span>publish: <?= $konten['created_at'] ?></span>
-                                        <span>Link: <?= $konten['link'] ?></span>
+                                        <strong><?= $jadwal['nama_pasien'] ?></strong>
+                                        <span><?= $jadwal['tanggal_pertemuan'] ?></span>
+                                        <span><?= $jadwal['status'] ?></span>
                                     </div>
                                 </div>
                             
                                 <div class="user-actions">
-                                    <a href="admin_editKonten.php?id=<?= $konten['id'] ?>">
+                                    <a href="<?= $jadwal['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
                                                 edit
@@ -247,11 +162,11 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                                         </button>
                                     </a>
 
-                                    <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        <input type="hidden" name="hapus_id" value="<?= $konten['id']; ?>">
+                                    <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        <input type="hidden" name="hapus_id" value="<?= $jadwal['id']; ?>">
                                         <input type="hidden" name="nama_table" value="konten_edukasi">
                                         <button type="submit">Hapus</button>
-                                    </form>
+                                    </form> -->
 
                                 </div>
                         </article>
@@ -259,8 +174,7 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                     </div>
 
                 </section>
-
-
+                <!-- end manajemen jadwal -->
             </main>
 
         </div>

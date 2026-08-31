@@ -89,7 +89,6 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
             </header>
 
             <main>
-
                 <!-- sesi pantau statistik -->
                 <section class="statistik-section">
                    <header>
@@ -176,14 +175,13 @@ $dataNonAktifAcc= array_filter($dataUsersCount, function($user){
                         endif;
                         ?>
 
-                        <a href="admin_tambahUser.php">
+                          <a href="admin_tambahUser.php">
                             <button class="btn-tambah">Tambah User</button>
                         </a>
                     </header>
 
                     <!-- list user -->
                     <div class="users-list">
-
                         <?php foreach ($dataUsersCount as $user): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">

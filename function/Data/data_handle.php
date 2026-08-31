@@ -5,9 +5,29 @@ use function PHPSTORM_META\override;
 function getDataById($koneksi, $targetTable, $id){
     $data = mysqli_query($koneksi, "SELECT * FROM $targetTable WHERE id = $id");
     return $data; 
+    }
+function thumbnailHanler($file){
+        $thumbnailTitle = uniqid() . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+        $tujuanSimpan = __DIR__ . '/../../uploads/thumbnails/' . $thumbnailTitle;
+        $pathDatabase = 'uploads/thumbnails/' . $thumbnailTitle;
+    
+        if(move_uploaded_file($file['tmp_name'], $tujuanSimpan)){
+            return $pathDatabase;
+        }else{
+            return false; 
+    }
 }
 
+function deleteData($koneksi, $id, $tableName){
+    $data = mysqli_prepare($koneksi, "DELETE FROM $tableName WHERE id=?");
+    mysqli_stmt_bind_param($data,'i', $id);
+    $prosesHapus = mysqli_stmt_execute($data);
+    return $prosesHapus;
+}
+                
 
+
+// users handle
 function getAlldataUsers($koneksi){
     $data = mysqli_prepare($koneksi, "SELECT * FROM users");
     // mysqli_stmt_bind_param($data, "s");
@@ -16,18 +36,6 @@ function getAlldataUsers($koneksi){
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function thumbnailHanler($file){
-    $thumbnailTitle = uniqid() . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-    $tujuanSimpan = __DIR__ . '/../../uploads/thumbnails/' . $thumbnailTitle;
-    $pathDatabase = 'uploads/thumbnails/' . $thumbnailTitle;
-
-    if(move_uploaded_file($file['tmp_name'], $tujuanSimpan)){
-        return $pathDatabase;
-        }else{
-            return false; 
-            }
-            }
-            
 function addUser($koneksi,$add){
                 
 $passwordPolos = $add['password'] ?? "";
@@ -66,12 +74,14 @@ $prosesModifikasi = mysqli_stmt_execute($data);
 return $prosesModifikasi;  
 }
 
+
+// content handle
 function getAlldataContent($koneksi){
-            $data = mysqli_prepare($koneksi, "SELECT * FROM konten_edukasi");
-            // mysqli_stmt_bind_param($data, "s");
-            mysqli_stmt_execute($data);
-            $result = mysqli_stmt_get_result($data);
-            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+$data = mysqli_prepare($koneksi, "SELECT * FROM konten_edukasi");
+// mysqli_stmt_bind_param($data, "s");
+mysqli_stmt_execute($data);
+$result = mysqli_stmt_get_result($data);
+return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
         
 function addContent($koneksi, $add, $id, $path){
@@ -106,16 +116,45 @@ $thumbnail = $update['thumbnail_lama'];
 }
 
 
+// function getAllDataSchedule($koneksi){
+//     $data = mysqli_prepare($koneksi, "SELECT * FROM jadwal_kontrol");
+//     mysqli_stmt_execute($data);
+//     $result = mysqli_stmt_get_result($data);
+//     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+// }
 
-
-
-
-function deleteData($koneksi, $id, $tableName){
-    $data = mysqli_prepare($koneksi, "DELETE FROM $tableName WHERE id=?");
-    mysqli_stmt_bind_param($data,'i', $id);
-    $prosesHapus = mysqli_stmt_execute($data);
-    return $prosesHapus;
+function getJadwalWithUser($koneksi){
+    $data = mysqli_query($koneksi,
+    "SELECT jadwal_kontrol.*, users.name AS nama_pasien
+    FROM jadwal_kontrol
+    JOIN users ON jadwal_kontrol.pasien_id = users.id");
+return mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
+
+function getUserWithDass($koneksi){
+    $data = mysqli_query($koneksi, 
+    "SELECT dass21_hasil.*, users.name AS pasien
+    FROM dass21_hasil
+    join users ON dass21_hasil.user_id = users.id");
+    return mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
+
+// function getAllDataDass21($koneksi){
+//     $data = mysqli_prepare($koneksi, "SELECT * FROM dass21_hasil");
+//     mysqli_stmt_execute($data);
+//     $result = mysqli_stmt_get_result($data);
+//     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+// }
+
+
+
+
+
+
+
+
+
+
 
 
 

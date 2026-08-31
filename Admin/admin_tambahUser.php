@@ -68,6 +68,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                     <H1>Tambah user</H1>
                 </div>
             </header>
+            
             <main>
                 <?php
                 if(!is_null($notifikasiAddUser)):
