@@ -4,20 +4,34 @@ require_once __DIR__ . "/../function/koneksi.php";
 require_once __DIR__ . "/../function/auth/auth_cek.php";
 
 
-proteksi($_SESSION["role"], $_SESSION["user_id"]);
+
+// proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
 // $user = getDataById($koneksi, $_GET['id'])->fetch_assoc();
 
 $user = getDataById($koneksi, 'users', $_GET['id'])->fetch_assoc();
+$userWithDass = getUserByIdWithDass($koneksi, $_GET['id']);
 
-$modifSukses = null;
+// var_dump($userWithDass); 
+// exit;
+// header('Content-Type: application/json');
+// echo json_encode($userWithDass);
+// exit; 
+
+// $error=null;
+// if($userWithDass){
+//     $error=$userWithDass['skor_depresi'] ?? null;
+// }
+
+
+$catatanSukses = null;
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $berhasilModifikasi = editUser($koneksi, $_POST, $user['id']);
-    if($berhasilModifikasi){
-        $modifSukses = "Modifikasi data berhasil";
+    $berhasilKirimCatatan = addCatatan($koneksi, $_POST, $userWithDass['user_id'], $_SESSION['user_id']);
+    if($berhasilKirimCatatan){
+        $catatanSukses = "Catatan berhasil dikirim";
     }else{
-        $modifSukses = "Modifikasi data gagal";
+        $catatanSukses = "Gagal mengirim catatan";
     }
 }
 
@@ -39,6 +53,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     <button>Kembali</button>
                 </a>
                 <h1>Detail Pasien</h1>
+                
             </header>
             <main>
                    <section class="profil-pasien">
@@ -59,22 +74,25 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     <section class="rekam-medis">
                         <div>
                             <h2>Rekam Medis</h2>
-                            <p><?= $user['no_rekam_medis'] ?></p>
-                            <p><?= $user['name'] ?></p>
-                            <p><?= $user['jenis_kelamin'] ?></p>
-                            <p><?= hitungUmur($user['tanggal_lahir'] )?></p>
-                            <p><?= $user['alamat'] ?></p>
-                            <p><?= $user['phone'] ?></p>
-                            <p><?= $user['alergi'] ?></p>
+                            <p>No rekam medis: <?= $user['no_rekam_medis'] ?></p>
+                            <p>Nama: <?= $user['name'] ?></p>
+                            <p>Jenis Kelamin: <?= $user['jenis_kelamin'] ?></p>
+                            <p>Umur: <?= hitungUmur($user['tanggal_lahir'] )?></p>
+                            <p>Alamat: <?= $user['alamat'] ?></p>
+                            <p>No Telepon: <?= $user['phone'] ?></p>
+                            <p>Alergi: <?= $user['alergi'] ?></p>
                         </div>
                         <div>
-                            
+                            <p>Diagnosa: </p>
+                            <p>Tanggal kunjungan:</p>
                         </div>
                     </section>
 
                     <section class="skor-dass21">
                         <h2>Skor DASS-21</h2>
-                        <!-- Skor Depresi, Kecemasan, Stres -->
+                        <p>Skor Depresi: <?= $userWithDass['skor_depresi'] ?></p>
+                        <p>Skor Kecemasan: <?= $userWithDass['skor_kecemasan'] ?></p>
+                        <p>Skor Stress: <?= $userWithDass['skor_stress'] ?></p>
                     </section>
 
                     <section class="grafik-mood">
@@ -94,7 +112,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                     <section class="catatan-pasien">
                         <h2>Catatan Pasien</h2>
-                        <!-- chart -->
+                        <?php
+                            if(!is_null($catatanSukses)):
+                        ?>
+                            <p><?= $catatanSukses ?></p>
+                        <?php endif;?>
+                        <form action="" method="POST">
+                            <input type="text" name="catatan_dariDokter" placeholder="Berikan catatan kepada pasien">
+                            <button type="submit">Simpan Catatan</button>
+                        </form>
                     </section>
             </main>
 

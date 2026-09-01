@@ -31,6 +31,13 @@ function deleteData($koneksi, $id, $tableName){
     $prosesHapus = mysqli_stmt_execute($data);
     return $prosesHapus;
 }
+
+function addCatatan($koneksi, $input, $userId, $dokterId){
+    $data = mysqli_prepare($koneksi, "INSERT INTO catatan_dokter (dokter_id, pasien_id, isi_catatan) VALUES (?, ?, ?)");
+    mysqli_stmt_bind_param($data, "iis", $dokterId, $userId, $input['catatan_dariDokter']);
+    $prosesTambahCatatan = mysqli_stmt_execute($data);
+    return $prosesTambahCatatan;
+}
                 
 
 
@@ -144,6 +151,15 @@ function getUserWithDass($koneksi){
     FROM dass21_hasil
     join users ON dass21_hasil.user_id = users.id");
     return mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
+function getUserByIdWithDass($koneksi, $id){
+    $data = mysqli_query($koneksi, 
+    "SELECT dass21_hasil.*,
+     users.name AS pasien
+    FROM dass21_hasil
+    join users ON dass21_hasil.user_id = users.id
+    WHERE users.id = $id");
+    return mysqli_fetch_assoc($data);
 }
 
 // function getAllDataDass21($koneksi){
