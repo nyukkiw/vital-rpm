@@ -18,6 +18,13 @@ function thumbnailHanler($file){
     }
 }
 
+function hitungUmur($tanggal_lahir){
+    $lahir = new DateTime(($tanggal_lahir));
+    $hari_ini = new DateTime();
+    $umur = $lahir->diff($hari_ini);
+    return $umur->y;
+}
+
 function deleteData($koneksi, $id, $tableName){
     $data = mysqli_prepare($koneksi, "DELETE FROM $tableName WHERE id=?");
     mysqli_stmt_bind_param($data,'i', $id);

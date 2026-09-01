@@ -43,6 +43,7 @@ $dataCountSchedule = array_filter(getJadwalWithUser($koneksi), function ($schedu
 $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
     return $user;
 });
+
 ?>
 
 <!DOCTYPE html>
@@ -107,14 +108,14 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                                     <a href="<?= $user['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
-                                                rekap
+                                                Rekap
                                             </span> 
                                         </button>
                                     </a>
-                                    <a href="<?= $user['id'] ?>">
+                                    <a href="dokter_detailPasien.php?id=<?= $user['user_id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
-                                                detail
+                                                Detail
                                             </span> 
                                         </button>
                                     </a>
@@ -157,7 +158,7 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                                     <a href="<?= $jadwal['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
-                                                edit
+                                                Edit
                                             </span>
                                         </button>
                                     </a>
