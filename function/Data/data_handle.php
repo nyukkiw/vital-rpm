@@ -38,6 +38,24 @@ function addCatatan($koneksi, $input, $userId, $dokterId){
     $prosesTambahCatatan = mysqli_stmt_execute($data);
     return $prosesTambahCatatan;
 }
+
+function addJadwalPasien($koneksi, $input, $dokterId){
+    $data = mysqli_prepare($koneksi, "INSERT INTO jadwal_kontrol (dokter_id, pasien_id, tanggal_pertemuan, status) VALUES (?, ?, ?, ?)");
+    mysqli_stmt_bind_param($data, "iiss", $dokterId, $input['pasien_id'], $input['tanggal_pertemuan'], $input['status_jadwal']);
+    $prosesTambahJadwal = mysqli_stmt_execute($data);
+    return $prosesTambahJadwal;
+}
+
+function editJadwalPasien($koneksi, $input, $jadwalId){
+    
+    $data = mysqli_prepare($koneksi, "UPDATE jadwal_kontrol SET tanggal_pertemuan = ?, status = ? WHERE id = ?");
+    mysqli_stmt_bind_param($data, "ssi", $input['tanggal_pertemuan'], $input['status_jadwal'], $jadwalId);
+    $prosesModifikasiJadwal = mysqli_stmt_execute($data);
+    return $prosesModifikasiJadwal;
+}
+
+
+
                 
 
 

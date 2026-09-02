@@ -97,17 +97,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                     <section class="grafik-mood">
                         <h2>Grafik Mood 7 Hari</h2>
-                        <!-- chart -->
+                        <p>berupa chart</p>
                     </section>
 
                     <section class="grafik-dass21-bulanan">
                         <h2>DASS-21 (Per Bulan)</h2>
-                        <!-- chart -->
+                        <p>berupa chart</p>
                     </section>
 
                     <section class="keluhan-pasien">
                         <h2>Keluhan Pasien</h2>
-                        <!-- chart -->
+                        <p>berupa chart</p>
                     </section>
 
                     <section class="catatan-pasien">

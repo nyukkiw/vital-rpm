@@ -8,24 +8,51 @@ $notifikasiHapus=null;
 
 proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_id']) && isset($_POST['nama_table'])){
-    // $notifikasiHapus=$_POST['hapus_id'];
-    $targetId=$_POST['hapus_id'];
-    $targetTable=$_POST['nama_table'];
+$notifikasiHapus=null;
+$tambahJadwal=null;
+$modifJadwal=null;
 
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-
-    $pengamanTable = ['users','konten_edukasi'];
-
-    if(in_array($targetTable,$pengamanTable)){
-        $suksesHapus = deleteData($koneksi, $targetId, $targetTable);
-        if($suksesHapus){
-            $notifikasiHapus = "Berhasil menghapus data";
+    if( isset($_POST['pasien_id']) && isset($_POST['status_jadwal']) && isset($_POST['tanggal_pertemuan'])){
+        $berhasilTambahJadwal = addJadwalPasien($koneksi, $_POST, $_SESSION['user_id']);
+        if($berhasilTambahJadwal){
+            $tambahJadwal = "Berhasil menambahkan jadwal";
         }else{
-            $notifikasiHapus = "Gagal menghapus data";
+            $tambahJadwal = "Gagal menambahkan jadwal";
         }
-
     }
+
+    if(isset($_POST['tanggal_pertemuan']) && isset($_POST['status_jadwal']) && isset($_POST['jadwal_id'])){
+        
+        $berhasilModifikasiJadwal = editJadwalPasien($koneksi, $_POST, $_POST['jadwal_id']);
+        if($berhasilModifikasiJadwal){
+            $modifJadwal = "Berhasil mengubah jadwal";
+        }else{
+            $modifJadwal = "Gagal mengubah jadwal";
+        }
+    }
+
+
+    if( isset($_POST['hapus_id']) && isset($_POST['nama_table'])){
+        $pengamanTable ='jadwal_kontrol';
+        if($_POST['nama_table'] !== $pengamanTable){
+            $notifikasiHapus = "Gagal menghapus data, nama table tidak sesuai";
+            exit;
+        }else{
+            $berhasilHapus=deleteData($koneksi, $_POST['hapus_id'], $_POST['nama_table']);
+            if($berhasilHapus){
+                $notifikasiHapus = "Berhasil menghapus data";
+            }else{
+                $notifikasiHapus = "Gagal menghapus data";
+            }
+        }
+    }
+
+
+
+
+  
 
 
 }
@@ -35,6 +62,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_id']) && isset($
 
 $dataCountSchedule = array_filter(getJadwalWithUser($koneksi), function ($schedule) {
     return $schedule;
+});
+
+$dataAllUsers = array_filter(getAlldataUsers($koneksi), function ($user) {
+    return $user['role'] !== 'dokter' && $user['role'] !== 'admin';
 });
 // $dataCountDassResult = array_filter(getAllDataDass21($koneksi), function ($result) {
 //     return $result;
@@ -77,14 +108,6 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                     <!-- Bagian Judul dan Tombol Tambah User -->
                     <header class="section-header">
                         <h2 class="title-daftar">Daftar pasien</h2>
-                        <?php
-                            if(!is_null($notifikasiHapus)):
-                        ?>
-                            <p><?= $notifikasiHapus ?></p>
-                        <?php
-                        endif;
-                        ?>
-
                         <a href="admin_tambahUser.php">
                             <button class="btn-tambah">Tambah User</button>
                         </a>
@@ -137,12 +160,53 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                 <section class="manajemem-konten">
                     <header class="section-header">
                         <h2 class="title-daftar">Jadwal pertemuan</h2>
-                        <a href="admin_tambahKonten.php">
-                            <button class="btn-tambah">buat jadwal</button>
-                        </a>
+                         <?php
+                            if(!is_null($tambahJadwal)):
+                            ?>
+                                <p><?= $tambahJadwal ?></p>
+                        <?php elseif(!is_null($notifikasiHapus)):?>
+                                <p><?= $notifikasiHapus ?></p>
+                        <?php endif;?>
+                                                <!-- tombol pemicu -->
+                        <button onclick="document.getElementById('modalJadwal').style.display='flex'">
+                            Buat Jadwal
+                        </button>
+
+                        <!-- modal-nya, tersembunyi di awal -->
+                        <div id="modalJadwal"  style="display: none; "class="modal-overlay">
+                            <div class="modal-content">
+                                <h3>Buat Jadwal</h3>
+
+                                <form method="POST">
+                                    <select name="pasien_id">
+                                        <?php foreach($dataAllUsers as $pasien):?>
+                                            <option value="<?= $pasien['id'] ?>"><?= $pasien['name'] ?></option>
+                                        <?php endforeach;?>
+                                    </select>
+                                    <select name="status_jadwal">
+                                            <option value="aktif">Aktif</option>
+                                            <option value="sudah_diproses">Tidak aktif</option>
+                                    </select>
+                                    <input type="date" name="tanggal_pertemuan">
+                                    <button type="submit">Simpan</button>
+                                    <button type="button" onclick="document.getElementById('modalJadwal').style.display='none'">Batal</button>
+                                </form>
+                            </div>
+                        </div>
                     </header>
 
+
                     <div class="users-list">
+                        <?php
+                            if(!is_null($notifikasiHapus)):
+                        ?>
+                            <p><?= $notifikasiHapus ?></p>
+                        <?php
+                        elseif(!is_null($modifJadwal)):
+                        ?>
+                            <p><?= $modifJadwal ?></p>
+                        <?php endif; ?>
+
                         <?php foreach ($dataCountSchedule as $jadwal): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
@@ -153,27 +217,49 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                                         <span><?= $jadwal['status'] ?></span>
                                     </div>
                                 </div>
-                            
-                                <div class="user-actions">
-                                    <a href="<?= $jadwal['id'] ?>">
-                                        <button class="btn-edit">
-                                            <span class="material-icons">
-                                                Edit
-                                            </span>
-                                        </button>
-                                    </a>
+                                <!-- edit jadwal -->
+                                    <button onclick="document.getElementById('modalJadwal<?= $jadwal['id'] ?>').style.display='flex'">
+                                        Edit
+                                    </button>
 
-                                    <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <!-- modal-nya, tersembunyi di awal -->
+                                    <div id="modalJadwal<?= $jadwal['id'] ?>"  style="display: none; "class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h3>Edit Jadwal</h3>
+
+                                            <form method="POST">
+                                                <input type="hidden" name="jadwal_id" value=<?= $jadwal['id'] ?>>
+                                                <!-- <select name="pasien_id">
+                                                    <?php foreach($dataAllUsers as $pasien):?>
+                                                        <option value="<?= $pasien['id'] ?>" <?= $pasien['id'] == $jadwal['pasien_id'] ? 'selected' : '' ?> >
+                                                            <?= $pasien['name'] ?>
+                                                        </option>
+                                                    <?php endforeach;?>
+                                                </select> -->
+
+                                                <select name="status_jadwal">
+                                                        <option value="aktif" <?= $jadwal['status'] == 'aktif' ? 'selected' : '' ?>>Aktif</option>
+                                                        <option value="tidak aktif" <?= $jadwal['status'] == 'tidak aktif' ? 'selected' : '' ?>>Tidak aktif</option>
+                                                </select>
+
+                                                <input type="date" name="tanggal_pertemuan" value="<?= $jadwal['tanggal_pertemuan'] ?>">
+                                                <button type="submit">Simpan perubahan</button>
+                                                <button type="button" onclick="document.getElementById('modalJadwal<?= $jadwal['id'] ?>').style.display='none'">Batal</button>
+
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         <input type="hidden" name="hapus_id" value="<?= $jadwal['id']; ?>">
-                                        <input type="hidden" name="nama_table" value="konten_edukasi">
+                                        <input type="hidden" name="nama_table" value="jadwal_kontrol">
                                         <button type="submit">Hapus</button>
-                                    </form> -->
+                                    </form>
 
                                 </div>
                         </article>
                         <?php endforeach;?>
                     </div>
-
                 </section>
                 <!-- end manajemen jadwal -->
             </main>
