@@ -71,7 +71,7 @@ $dataAllUsers = array_filter(getAlldataUsers($koneksi), function ($user) {
 //     return $result;
 // });
 
-$dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
+$dataCountPasienDass = array_filter(getUserWithDass($koneksi), function($user){
     return $user;
 });
 
@@ -116,26 +116,25 @@ $dataCountPasien = array_filter(getUserWithDass($koneksi), function($user){
                     <!-- list user -->
                     <div class="users-list">
 
-                        <?php foreach ($dataCountPasien as $user): ?>
+                        <?php foreach ($dataAllUsers as $user): ?>
                         <article class="user-card-row">
                                 <div class="user-profile-info">
                                     <span class="material-icons avatar-icon">person</span>
                                     <div class="user-text">
-                                        <strong><?= $user['pasien'] ?></strong>
-                                        <span>Last DASS-21 * <?= $user['tanggal_pengisian'] ?></span>
+                                        <strong><?= $user['name'] ?></strong>
+                                        <!-- <span>Last DASS-21 * <?= $dataCountPasienDass['tanggal_pengisian'][$user['name']] ?></span> -->
                                     </div>
                                 </div>
                             
                                 <div class="user-actions">
-                                    <span class="badge badge-aktif"><?= $user['kategori'] ?></span>
-                                    <a href="<?= $user['id'] ?>">
+                                    <a href="dokter_rekapOnePasien.php?id=<?= $user['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
                                                 Rekap
                                             </span> 
                                         </button>
                                     </a>
-                                    <a href="dokter_detailPasien.php?id=<?= $user['user_id'] ?>">
+                                    <a href="dokter_detailPasien.php?id=<?= $user['id'] ?>">
                                         <button class="btn-edit">
                                             <span class="material-icons">
                                                 Detail

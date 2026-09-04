@@ -18,6 +18,8 @@ function thumbnailHanler($file){
     }
 }
 
+
+
 function hitungUmur($tanggal_lahir){
     $lahir = new DateTime(($tanggal_lahir));
     $hari_ini = new DateTime();
@@ -170,6 +172,7 @@ function getUserWithDass($koneksi){
     join users ON dass21_hasil.user_id = users.id");
     return mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
+
 function getUserByIdWithDass($koneksi, $id){
     $data = mysqli_query($koneksi, 
     "SELECT dass21_hasil.*,
@@ -178,6 +181,14 @@ function getUserByIdWithDass($koneksi, $id){
     join users ON dass21_hasil.user_id = users.id
     WHERE users.id = $id");
     return mysqli_fetch_assoc($data);
+}
+function getUserRiwayatTerapi($koneksi, $userId){
+    $data = mysqli_query($koneksi, 
+    "SELECT riwayat_terapi.*, users.name AS nama_pasien
+    FROM riwayat_terapi
+    join users ON riwayat_terapi.pasien_id = users.id
+    WHERE users.id = $userId");
+    return mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
 
 // function getAllDataDass21($koneksi){
