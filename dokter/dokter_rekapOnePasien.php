@@ -12,8 +12,8 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 $user = getDataById($koneksi, 'users', $_GET['id'])->fetch_assoc();
 $userWithDass = getUserByIdWithDass($koneksi, $_GET['id']);
 $userRiwayatTerapi = getUserRiwayatTerapi($koneksi, $_GET['id']);
-
-
+$diagnosisTerbaru = end($userRiwayatTerapi);
+// var_dump($diagnosisTerbaru);
 
 $umurUser = hitungUmur($user['tanggal_lahir']);
 
@@ -67,7 +67,7 @@ $umurUser = hitungUmur($user['tanggal_lahir']);
                     <div>
                         <p>foto profil</p>
                         <h2><?= $user['name'] ?></h2>
-                        <p>Diagnosis: <?= $userRiwayatTerapi['diagnosis']?></p>
+                        <p>Diagnosis: <?= $diagnosisTerbaru['diagnosis'] ?? 'Tidak ada diagnosis' ?></p>
                        
                     </div>                        
                     </section>
@@ -85,9 +85,9 @@ $umurUser = hitungUmur($user['tanggal_lahir']);
                     <section class="rekam-medis">
                         <div>
                             <h2>Ringkasan Skor DASS-21 Terbaru</h2>
-                            <p>Depresi: <?= $userWithDass['skor_depresi'] ?></p>
-                            <p>Kecemasan: <?= $userWithDass['skor_kecemasan'] ?></p>
-                            <p>Stress: <?= $userWithDass['skor_stress'] ?></p>
+                            <p>Depresi: <?= $userWithDass['skor_depresi'] ?? 'Tidak mengisi DASS-21' ?></p>
+                            <p>Kecemasan: <?= $userWithDass['skor_kecemasan'] ?? 'Tidak mengisi DASS-21' ?></p>
+                            <p>Stress: <?= $userWithDass['skor_stress'] ?? 'Tidak mengisi DASS-21' ?></p>
                         </div>
                     </section>
                 <!-- End ringkasan skor dass-21 terbaru-->
@@ -102,11 +102,17 @@ $umurUser = hitungUmur($user['tanggal_lahir']);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($userRiwayatTerapi as $riwayat): ?>
-                                    <tr>
-                                        <td><?= $riwayat['tanggal_terapi'] ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
+                                  <?php if (empty($userRiwayatTerapi)): ?>
+                                        <tr>
+                                            <td>Belum ada kunjungan</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach($userRiwayatTerapi as $riwayat): ?>
+                                            <tr>
+                                                <td><?= $riwayat['tanggal_terapi'] ?? 'Tanggal tidak tercatat' ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                             </tbody>
 
                         </table>

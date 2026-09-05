@@ -172,6 +172,14 @@ function getUserWithDass($koneksi){
     join users ON dass21_hasil.user_id = users.id");
     return mysqli_fetch_all($data, MYSQLI_ASSOC);
 }
+function getUserIdWithDass($koneksi, $userId){
+    $data = mysqli_query($koneksi, 
+    "SELECT dass21_hasil.*, users.name AS pasien
+    FROM dass21_hasil
+    join users ON dass21_hasil.user_id = users.id
+    WHERE users.id = $userId");
+    return mysqli_fetch_all($data, MYSQLI_ASSOC);
+}
 
 function getUserByIdWithDass($koneksi, $id){
     $data = mysqli_query($koneksi, 

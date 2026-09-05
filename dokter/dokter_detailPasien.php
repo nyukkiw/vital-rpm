@@ -10,6 +10,7 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 // $user = getDataById($koneksi, $_GET['id'])->fetch_assoc();
 
 $user = getDataById($koneksi, 'users', $_GET['id'])->fetch_assoc();
+// var_dump($user);
 $userWithDass = getUserByIdWithDass($koneksi, $_GET['id']);
 
 // var_dump($userWithDass); 

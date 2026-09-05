@@ -6,7 +6,7 @@ require_once __DIR__ . "/../function/auth/auth_cek.php";
 
 $notifikasiHapus=null;
 
-proteksi($_SESSION["role"], $_SESSION["user_id"]);
+// proteksi($_SESSION["role"], $_SESSION["user_id"]);
 
 $notifikasiHapus=null;
 $tambahJadwal=null;
@@ -75,6 +75,9 @@ $dataCountPasienDass = array_filter(getUserWithDass($koneksi), function($user){
     return $user;
 });
 
+// var_dump($dataCountPasienDass);
+// var_dump($dataAllUsers);
+
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +100,6 @@ $dataCountPasienDass = array_filter(getUserWithDass($koneksi), function($user){
                     <span class="material-icons">person icon</span>
                     <div class="profile-info">
                         <strong><?= $_SESSION['user'] ?> || <a href="/function/auth/logout.php">Logout</a> </strong>
-                      
                     </div>
                 </div>
             </header>
@@ -105,50 +107,93 @@ $dataCountPasienDass = array_filter(getUserWithDass($koneksi), function($user){
             <main>
                 <!-- sesi manajemen user -->
                 <section class="users-manajemen">
-                    <!-- Bagian Judul dan Tombol Tambah User -->
-                    <header class="section-header">
-                        <h2 class="title-daftar">Daftar pasien</h2>
-                        <a href="admin_tambahUser.php">
-                            <button class="btn-tambah">Tambah User</button>
-                        </a>
-                    </header>
-
-                    <!-- list user -->
+                    <!-- LIST USER -->
+                    <div class="section-header">
+                        <h2 class="title-daftar">Daftar Pasien Dengan DASS-21</h2>
+                    </div>
+                    
                     <div class="users-list">
-
                         <?php foreach ($dataAllUsers as $user): ?>
-                        <article class="user-card-row">
-                                <div class="user-profile-info">
-                                    <span class="material-icons avatar-icon">person</span>
-                                    <div class="user-text">
-                                        <strong><?= $user['name'] ?></strong>
-                                        <!-- <span>Last DASS-21 * <?= $dataCountPasienDass['tanggal_pengisian'][$user['name']] ?></span> -->
-                                    </div>
-                                </div>
-                            
-                                <div class="user-actions">
-                                    <a href="dokter_rekapOnePasien.php?id=<?= $user['id'] ?>">
-                                        <button class="btn-edit">
-                                            <span class="material-icons">
-                                                Rekap
-                                            </span> 
-                                        </button>
-                                    </a>
-                                    <a href="dokter_detailPasien.php?id=<?= $user['id'] ?>">
-                                        <button class="btn-edit">
-                                            <span class="material-icons">
-                                                Detail
-                                            </span> 
-                                        </button>
-                                    </a>
+                            <?php
+                                if(getUserByIdWithDass($koneksi, $user['id'])): 
+                            ?>
+                                <article class="user-card-row">
+                                        <div class="user-profile-info">
+                                            <span class="material-icons avatar-icon">person</span>
+                                            <div class="user-text">
+                                                <strong><?= $user['name'] ?></strong>
+                                                <p>Last DASS-21 * <?= getUserByIdWithDass($koneksi, $user['id'])['tanggal_pengisian'] ?? 'Tanggal tidak tercatat' ?></p>
+                                            </div>
+                                        </div>
                                     
-                                    <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        <input type="hidden" name="hapus_id" value="<?= $user['id']; ?>">
-                                        <input type="hidden" name="nama_table" value="users">
-                                        <button type="submit">Hapus</button>
-                                    </form> -->
-                                </div>
-                        </article>
+                                        <div class="user-actions">
+                                            <a href="dokter_rekapOnePasien.php?id=<?= $user['id'] ?>">
+                                                <button class="btn-edit">
+                                                    <span class="material-icons">
+                                                        Rekap
+                                                    </span> 
+                                                </button>
+                                            </a>
+                                            <a href="dokter_detailPasien.php?id=<?= $user['id'] ?>">
+                                                <button class="btn-edit">
+                                                    <span class="material-icons">
+                                                        Detail
+                                                    </span> 
+                                                </button>
+                                            </a>
+                                            
+                                            <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                                <input type="hidden" name="hapus_id" value="<?= $user['id']; ?>">
+                                                <input type="hidden" name="nama_table" value="users">
+                                                <button type="submit">Hapus</button>
+                                            </form> -->
+                                        </div>
+                                </article>
+                            <?php endif;?>
+                        <?php endforeach;?>
+                    </div>
+
+                    <div class="section-header">
+                        <h2 class="title-daftar">Daftar Pasien Tanpa DASS-21</h2>
+                    </div>
+                    <div class="users-list">
+                        <?php foreach ($dataAllUsers as $user): ?>
+                            <?php 
+                                if(!getUserByIdWithDass($koneksi, $user['id'])): 
+                            ?>
+                                <article class="user-card-row">
+                                        <div class="user-profile-info">
+                                            <span class="material-icons avatar-icon">person</span>
+                                            <div class="user-text">
+                                                <strong><?= $user['name'] ?></strong>
+                                                <p>Tidak mengisi Dass-21</p>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="user-actions">
+                                            <a href="dokter_rekapOnePasien.php?id=<?= $user['id'] ?>">
+                                                <button class="btn-edit">
+                                                    <span class="material-icons">
+                                                        Rekap
+                                                    </span> 
+                                                </button>
+                                            </a>
+                                            <a href="dokter_detailPasien.php?id=<?= $user['id'] ?>">
+                                                <button class="btn-edit">
+                                                    <span class="material-icons">
+                                                        Detail
+                                                    </span> 
+                                                </button>
+                                            </a>
+                                            
+                                            <!-- <form method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                                <input type="hidden" name="hapus_id" value="<?= $user['id']; ?>">
+                                                <input type="hidden" name="nama_table" value="users">
+                                                <button type="submit">Hapus</button>
+                                            </form> -->
+                                        </div>
+                                </article>
+                            <?php endif;?>
                         <?php endforeach;?>
                     </div>
                     <!-- end list user -->
